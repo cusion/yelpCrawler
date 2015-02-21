@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from scrapy.settings.default_settings import LOG_LEVEL
 
 # Scrapy settings for yelpCrawler project
 #
@@ -15,3 +16,8 @@ NEWSPIDER_MODULE = 'yelpCrawler.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'yelpCrawler (+http://www.yourdomain.com)'
+ITEM_PIPELINES = {
+                  'yelpCrawler.pipelines.restaurantPipeline' : 100,
+                  }
+LOG_ENABLED = True
+LOG_LEVEL = 'DEBUG'

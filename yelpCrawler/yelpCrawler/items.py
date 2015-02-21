@@ -5,10 +5,15 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+# import scrapy
+from scrapy import Item, Field
 
 
-class YelpcrawlerItem(scrapy.Item):
+class YelpcrawlerItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    name = Field()
+    rating = Field()
+    review_count = Field()
+    price_range = Field()
+    location = Field()
