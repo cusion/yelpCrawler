@@ -17,7 +17,7 @@ NEWSPIDER_MODULE = 'yelpCrawler.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'yelpCrawler (+http://www.yourdomain.com)'
 ITEM_PIPELINES = {
-                  'yelpCrawler.pipelines.restaurantPipeline' : 100,
+                  'yelpCrawler.pipelines.jsonDumpPipeline' : 100,
                   }
-LOG_ENABLED = True
-LOG_LEVEL = 'DEBUG'
+LOG_ENABLED = False
+# LOG_LEVEL = 'DEBUG'

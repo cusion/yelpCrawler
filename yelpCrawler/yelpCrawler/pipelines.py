@@ -16,10 +16,10 @@ from scrapy.http import Request
 import json
 import codecs
 
-class restaurantPipeline(object):
+class jsonDumpPipeline(object):
     count = 0
     def __init__(self):
-        self.file = codecs.open('restaurant.json', 'w', encoding='utf-8')
+        self.file = codecs.open('test_result.json', 'w', encoding='utf-8')
         
     def process_item(self, item, spider):
         line = json.dumps(dict(item), ensure_ascii=False)+"\n"
