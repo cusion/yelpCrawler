@@ -46,7 +46,7 @@ class RandomProxy(object):
         if 'proxy' in request.meta:
             proxy = request.meta['proxy']
             log.msg('Removing failed proxy <%s>, %d proxies left' % (
-                        proxy, len(self.proxies)))
+                        proxy, len(self.proxies)), level=log.INFO)
             try:
                 del self.proxies[proxy]
             except ValueError:

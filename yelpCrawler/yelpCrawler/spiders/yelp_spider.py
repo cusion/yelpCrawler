@@ -41,7 +41,8 @@ class restaurantSpider(CrawlSpider):
             item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
 #             print(type(element.css('span.review-count').xpath('text()').extract()))
             item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            item['location'] = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            parse_location(location, item, response.url)
 #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
             
 #             items.append(item)
@@ -78,7 +79,9 @@ class bankSpider(CrawlSpider):
             item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
 #             print(type(element.css('span.review-count').xpath('text()').extract()))
             item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            item['location'] = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            
+            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            parse_location(location, item, response.url)
 #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
             
 #             items.append(item)
@@ -114,7 +117,9 @@ class gasStationSpider(CrawlSpider):
             item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
 #             print(type(element.css('span.review-count').xpath('text()').extract()))
             item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            item['location'] = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            
+            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            parse_location(location, item, response.url)
 #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
             
 #             items.append(item)
@@ -150,7 +155,9 @@ class grocerySpider(CrawlSpider):
             item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
 #             print(type(element.css('span.review-count').xpath('text()').extract()))
             item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            item['location'] = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            
+            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
+            parse_location(location, item, response.url)
 #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
             
 #             items.append(item)
@@ -171,5 +178,23 @@ def trim_and_join(field):
     for ele in field:
         ret += ele.strip()+" "
     return ret[:-1]
+    
+    
+def parse_location(location, item, url):
+    city = re.match('.*find_loc=(.*?)%', url)
+    location = re.sub(r"\s+", " ", location)
+    if city:
+        city = re.sub(r"\s+", " ", city.group(1)).replace('+', ' ').strip()
+    else:
+        city = "NA"
+    segs = location.split(',')
+    
+    item['city'] = city
+    if city != "NA":
+        item['street'] = segs[0].replace(city, '').strip()
+    else:
+        item['street'] = segs[0].strip()
+    item['state'] = segs[1].strip()[:2]
+    item['zip'] = segs[1].strip()[-5:]
     
     
