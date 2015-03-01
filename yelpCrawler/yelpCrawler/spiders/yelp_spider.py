@@ -2,11 +2,13 @@ from scrapy.contrib.spiders.crawl import CrawlSpider, Rule
 from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import Selector
 from scrapy import log
+from scrapy.http import Request
 
 import re
 
 from yelpCrawler.items import YelpcrawlerItem
-from scrapy.log import level_names
+
+pattern = r"/search\?.*find_desc.*"
 
 class restaurantSpider(CrawlSpider):
     name = "restaurantSpider"
@@ -16,7 +18,7 @@ class restaurantSpider(CrawlSpider):
                  ]
 #     start_urls = [line for line in open("yelpCrawler/seeds/restaurant.txt")]
     rules = [
-            Rule(SgmlLinkExtractor(allow=(r"/search\?.*", ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_restaurant'),
+            Rule(SgmlLinkExtractor(allow=(pattern, ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_restaurant'),
 #               Rule(SgmlLinkExtractor(allow=(r"/search\?.*start=\d+")),  follow=True, callback='parse_restaurant'),
             ]
     
@@ -31,22 +33,22 @@ class restaurantSpider(CrawlSpider):
         if not result_list:
             log.msg("Retrying with " + response.url, level=log.INFO)
             yield Request(url=response.url, dont_filter=True)
-        
-        log.msg("Crawled "+response.url, level=log.INFO)
-        for element in result_list:
-            item = YelpcrawlerItem()
-            item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
-#             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
-            item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
-            item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
-#             print(type(element.css('span.review-count').xpath('text()').extract()))
-            item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
-            parse_location(location, item, response.url)
-#             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
-            
-#             items.append(item)
-            yield item
+        else:
+            log.msg("Crawled "+response.url, level=log.INFO)
+            for element in result_list:
+                item = YelpcrawlerItem()
+                item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
+    #             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
+                item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
+                item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
+    #             print(type(element.css('span.review-count').xpath('text()').extract()))
+                item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
+                location = element.css('div.secondary-attributes address').xpath('text()').extract()
+                parse_location(location, item)
+    #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
+                
+    #             items.append(item)
+                yield item
         
 #         yield items
     
@@ -58,7 +60,7 @@ class bankSpider(CrawlSpider):
     start_urls = [line for line in open("yelpCrawler/seeds/bank.txt")]
     
     rules = [
-            Rule(SgmlLinkExtractor(allow=(r"/search\?.*", ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_bank'),
+            Rule(SgmlLinkExtractor(allow=(pattern, ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_bank'),
 #               Rule(SgmlLinkExtractor(allow=(r"/search\?.*start=\d+")),  follow=True, callback='parse_restaurant'),
             ]
     def parse_bank(self, response):
@@ -70,22 +72,23 @@ class bankSpider(CrawlSpider):
         # add this to retry another proxy
         if not result_list:
             yield Request(url=response.url, dont_filter=True)
-        
-        for element in result_list:
-            item = YelpcrawlerItem()
-            item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
-#             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
-            item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
-            item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
-#             print(type(element.css('span.review-count').xpath('text()').extract()))
-            item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            
-            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
-            parse_location(location, item, response.url)
-#             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
-            
-#             items.append(item)
-            yield item
+        else:
+            for element in result_list:
+                item = YelpcrawlerItem()
+                item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
+    #             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
+                item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
+                item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
+    #             print(type(element.css('span.review-count').xpath('text()').extract()))
+                item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
+                
+                location = element.css('div.secondary-attributes address').xpath('text()').extract()
+    #             parse_location(location, item, response.url)
+                parse_location(location, item)
+    #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
+                
+    #             items.append(item)
+                yield item
         
 #         yield items          # we cannot yield list, rather we should yield an item each time we want to append it into a list
     
@@ -96,7 +99,7 @@ class gasStationSpider(CrawlSpider):
     start_urls = [line for line in open("yelpCrawler/seeds/gas_station.txt")]
     
     rules = [
-            Rule(SgmlLinkExtractor(allow=(r"/search\?.*", ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_gasStation'),
+            Rule(SgmlLinkExtractor(allow=(pattern, ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_gasStation'),
 #               Rule(SgmlLinkExtractor(allow=(r"/search\?.*start=\d+")),  follow=True, callback='parse_restaurant'),
             ]
     def parse_gasStation(self, response):
@@ -108,22 +111,22 @@ class gasStationSpider(CrawlSpider):
         # add this to retry another proxy
         if not result_list:
             yield Request(url=response.url, dont_filter=True)
-        
-        for element in result_list:
-            item = YelpcrawlerItem()
-            item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
-#             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
-            item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
-            item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
-#             print(type(element.css('span.review-count').xpath('text()').extract()))
-            item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            
-            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
-            parse_location(location, item, response.url)
-#             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
-            
-#             items.append(item)
-            yield item
+        else:
+            for element in result_list:
+                item = YelpcrawlerItem()
+                item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
+    #             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
+                item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
+                item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
+    #             print(type(element.css('span.review-count').xpath('text()').extract()))
+                item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
+                
+                location = element.css('div.secondary-attributes address').xpath('text()').extract()
+                parse_location(location, item)
+    #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
+                
+    #             items.append(item)
+                yield item
         
 #         yield items
     
@@ -134,7 +137,7 @@ class grocerySpider(CrawlSpider):
     start_urls = [line for line in open("yelpCrawler/seeds/grocery_store.txt")]
     
     rules = [
-            Rule(SgmlLinkExtractor(allow=(r"/search\?.*", ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_grocery'),
+            Rule(SgmlLinkExtractor(allow=(pattern, ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_grocery'),
 #               Rule(SgmlLinkExtractor(allow=(r"/search\?.*start=\d+")),  follow=True, callback='parse_restaurant'),
             ]
     def parse_grocery(self, response):
@@ -146,22 +149,22 @@ class grocerySpider(CrawlSpider):
         # add this to retry another proxy
         if not result_list:
             yield Request(url=response.url, dont_filter=True)
-        
-        for element in result_list:
-            item = YelpcrawlerItem()
-            item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
-#             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
-            item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
-            item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
-#             print(type(element.css('span.review-count').xpath('text()').extract()))
-            item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
-            
-            location = trim_and_join(element.css('div.secondary-attributes address').xpath('text()').extract())
-            parse_location(location, item, response.url)
-#             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
-            
-#             items.append(item)
-            yield item
+        else:
+            for element in result_list:
+                item = YelpcrawlerItem()
+                item['name'] = clear_html_tag(trim_and_join(element.css('h3.search-result-title a.biz-name').extract()))
+    #             print(type(element.css('h3.search-result-title a.biz-name').xpath('text()').extract()))
+                item['rating'] = trim_and_join(element.css('div.rating-large i.star-img').xpath('@title').extract()).split()[0]
+                item['review_count'] = trim_and_join(element.css('span.review-count').xpath('text()').extract()).split()[0]
+    #             print(type(element.css('span.review-count').xpath('text()').extract()))
+                item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
+                
+                location = element.css('div.secondary-attributes address').xpath('text()').extract()
+                parse_location(location, item)
+    #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
+                
+    #             items.append(item)
+                yield item
         
 #         yield items
     
@@ -180,21 +183,30 @@ def trim_and_join(field):
     return ret[:-1]
     
     
-def parse_location(location, item, url):
-    city = re.match('.*find_loc=(.*?)%', url)
-    location = re.sub(r"\s+", " ", location)
-    if city:
-        city = re.sub(r"\s+", " ", city.group(1)).replace('+', ' ').strip()
-    else:
-        city = "NA"
-    segs = location.split(',')
+def parse_location(location, item):
     
-    item['city'] = city
-    if city != "NA":
-        item['street'] = segs[0].replace(city, '').strip()
+    if not location:
+        item['city'] = "NA"
+        item['street'] = "NA"
+        item['state'] = "NA"
+        item['zip'] = "NA"
+    elif len(location) == 2:
+        item['street'] = location[0].strip()
+        segs = location[1].split(',')
+        item['city'] = segs[0].strip()
+        item['state'] = segs[1].strip()[:2]
+        item['zip'] = segs[1].strip()[-5:]
     else:
-        item['street'] = segs[0].strip()
-    item['state'] = segs[1].strip()[:2]
-    item['zip'] = segs[1].strip()[-5:]
+        if location[0].find(',') > 0:
+            item['street'] = "NA"
+            segs = location[0].split(",")
+            item['city'] = segs[0].strip()
+            item['state'] = segs[1].strip()[:2]
+            item['zip'] = segs[1].strip()[-5:]
+        else:
+            item['street'] = location[0].strip()
+            item['city'] = "NA"
+            item['state'] = "NA"
+            item['zip'] = "NA"
     
     

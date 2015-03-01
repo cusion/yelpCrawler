@@ -29,6 +29,7 @@ class RandomProxy(object):
         self.proxies = {}
         for line in open(self.proxy_list, "r"):
             proxy = line.split()[0].strip()
+            proxy = "http://%s"%proxy
             self.proxies[proxy] = proxy
 
     @classmethod
@@ -38,8 +39,8 @@ class RandomProxy(object):
     def process_request(self, request, spider):
         item = random.choice(self.proxies.keys())
         proxy = self.proxies[item]
-        request.meta['proxy'] = 'http://%s' % proxy
-        print("request proxy" + request.url + "\t" + proxy)
+        request.meta['proxy'] = proxy
+        print("request proxy " + request.url + "\t" + proxy)
 
     def process_exception(self, request, exception, spider):
         print(exception)
