@@ -3,6 +3,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.selector import Selector
 from scrapy import log
 from scrapy.http import Request
+from scrapy.shell import inspect_response
 
 import re
 
@@ -13,10 +14,10 @@ pattern = r"/search\?.*find_desc.*"
 class restaurantSpider(CrawlSpider):
     name = "restaurantSpider"
     allowed_domains = ["www.yelp.com",]
-    start_urls = [
-                  "http://www.yelp.com/search?find_desc=chinese+restaurant&find_loc=San+Francisco%2C+CA&ns=1&start=0&sortby=rating&l=g:-122.530517578,37.6859939294,-122.325897217,37.8488325065",
-                 ]
-#     start_urls = [line for line in open("yelpCrawler/seeds/restaurant.txt")]
+    # start_urls = [
+    #               "http://www.yelp.com/search?find_desc=chinese+restaurant&find_loc=San+Francisco%2C+CA&ns=1&start=0&sortby=rating&l=g:-122.530517578,37.6859939294,-122.325897217,37.8488325065",
+    #              ]
+    start_urls = [line for line in open("yelpCrawler/seeds/restaurant.txt")]
     rules = [
             Rule(SgmlLinkExtractor(allow=(pattern, ), restrict_xpaths=('//ul[@class="pagination-links"]')), follow=True, callback='parse_restaurant'),
 #               Rule(SgmlLinkExtractor(allow=(r"/search\?.*start=\d+")),  follow=True, callback='parse_restaurant'),
@@ -24,10 +25,10 @@ class restaurantSpider(CrawlSpider):
     
     def parse_restaurant(self, response):
         items = []
-#         print(response.url)
+        print(response.url)
         sel = Selector(response)
         
-        result_list = sel.css('div.content ul.ylist.ylist-bordered.search-results div.natural-search-result')
+        result_list = sel.css('div.search-results-content ul.ylist.ylist-bordered.search-results div.natural-search-result')
         
         # add this to retry another proxy
         if not result_list:
@@ -44,6 +45,7 @@ class restaurantSpider(CrawlSpider):
     #             print(type(element.css('span.review-count').xpath('text()').extract()))
                 item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
                 location = element.css('div.secondary-attributes address').xpath('text()').extract()
+                item['phone'] = trim_and_join(element.css('div.secondary-attributes span.biz-phone').xpath('text()').extract())
                 parse_location(location, item)
     #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
                 
@@ -56,7 +58,7 @@ class bankSpider(CrawlSpider):
     name = "bankSpider"
     allowed_domains = ["www.yelp.com",]
     
-#     start_urls = ["http://www.yelp.com/search?find_loc=San+Francisco%2C+CA&ns=1&find_desc=bank&start=0&sortby=rating&l=g:-122.530517578,37.6859939294,-122.325897217,37.8488325065",]
+    # start_urls = ["http://www.yelp.com/search?find_loc=San+Francisco%2C+CA&ns=1&find_desc=bank&start=0&sortby=rating&l=g:-122.530517578,37.6859939294,-122.325897217,37.8488325065",]
     start_urls = [line for line in open("yelpCrawler/seeds/bank.txt")]
     
     rules = [
@@ -67,7 +69,7 @@ class bankSpider(CrawlSpider):
         items = []
         sel = Selector(response)
         
-        result_list = sel.css('div.content ul.ylist.ylist-bordered.search-results div.natural-search-result')
+        result_list = sel.css('div.search-results-content ul.ylist.ylist-bordered.search-results div.natural-search-result')
         
         # add this to retry another proxy
         if not result_list:
@@ -82,6 +84,7 @@ class bankSpider(CrawlSpider):
     #             print(type(element.css('span.review-count').xpath('text()').extract()))
                 item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
                 
+                item['phone'] = trim_and_join(element.css('div.secondary-attributes span.biz-phone').xpath('text()').extract())
                 location = element.css('div.secondary-attributes address').xpath('text()').extract()
     #             parse_location(location, item, response.url)
                 parse_location(location, item)
@@ -106,7 +109,7 @@ class gasStationSpider(CrawlSpider):
         items = []
         sel = Selector(response)
         
-        result_list = sel.css('div.content ul.ylist.ylist-bordered.search-results div.natural-search-result')
+        result_list = sel.css('div.search-results-content ul.ylist.ylist-bordered.search-results div.natural-search-result')
         
         # add this to retry another proxy
         if not result_list:
@@ -121,6 +124,7 @@ class gasStationSpider(CrawlSpider):
     #             print(type(element.css('span.review-count').xpath('text()').extract()))
                 item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
                 
+                item['phone'] = trim_and_join(element.css('div.secondary-attributes span.biz-phone').xpath('text()').extract())
                 location = element.css('div.secondary-attributes address').xpath('text()').extract()
                 parse_location(location, item)
     #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))
@@ -144,7 +148,7 @@ class grocerySpider(CrawlSpider):
         items = []
         sel = Selector(response)
         
-        result_list = sel.css('div.content ul.ylist.ylist-bordered.search-results div.natural-search-result')
+        result_list = sel.css('div.search-results-content ul.ylist.ylist-bordered.search-results div.natural-search-result')
         
         # add this to retry another proxy
         if not result_list:
@@ -159,6 +163,7 @@ class grocerySpider(CrawlSpider):
     #             print(type(element.css('span.review-count').xpath('text()').extract()))
                 item['price_range'] = trim_and_join(element.css('div.price-category span.business-attribute.price-range').xpath('text()').extract()).count("$")
                 
+                item['phone'] = trim_and_join(element.css('div.secondary-attributes span.biz-phone').xpath('text()').extract())
                 location = element.css('div.secondary-attributes address').xpath('text()').extract()
                 parse_location(location, item)
     #             print(type(element.css('div.secondary-attributes address').xpath('text()').extract()))

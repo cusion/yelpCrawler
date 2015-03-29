@@ -40,3 +40,12 @@ http://www.yelp.com/search?find_desc=bank&find_loc=Pleasanton%2C+CA&ns=1&start=0
 http://www.yelp.com/search?find_desc=bank&find_loc=Hayward%2C+CA&ns=1&start=0&sortby=rating&l=g:-122.191314697,37.5690725157,-121.986694336,37.7321679264
 http://www.yelp.com/search?find_desc=bank&find_loc=Hayward%2C+CA&ns=1&start=0&sortby=review_count&l=g:-122.191314697,37.5690725157,-121.986694336,37.7321679264
 http://www.yelp.com/search?find_desc=bank&find_loc=Hayward%2C+CA&ns=1&start=0&sortby=rating&l=g:-122.191314697,37.5690725157,-121.986694336,37.7321679264
+http://www.yelp.com/search?find_desc=bank&find_loc=New+York%2C+NY&start=0&sortby=rating&l=g:-74.1089630127,40.6358409934,-73.9043426514,40.7919791181
+http://www.yelp.com/search?find_desc=bank&find_loc=New+York%2C+NY&start=0&sortby=review_count&l=g:-74.1089630127,40.6358409934,-73.9043426514,40.7919791181
+http://www.yelp.com/search?find_desc=bank&find_loc=New+York%2C+NY&start=0&l=g:-74.1089630127,40.6358409934,-73.9043426514,40.7919791181
+http://www.yelp.com/search?find_desc=bank&find_loc=Boston%2C+MA&ns=1&start=0&sortby=rating&l=g:-71.1735534668,42.2717200056,-70.9689331055,42.4239633833
+http://www.yelp.com/search?find_desc=bank&find_loc=Boston%2C+MA&ns=1&start=0&sortby=review_count&l=g:-71.1735534668,42.2717200056,-70.9689331055,42.4239633833
+http://www.yelp.com/search?find_desc=bank&find_loc=Boston%2C+MA&ns=1&start=0&l=g:-71.1735534668,42.2717200056,-70.9689331055,42.4239633833
+http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&sortby=rating&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949
+http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&sortby=review_count&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949
+http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949

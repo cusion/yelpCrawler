@@ -21,3 +21,5 @@ class YelpcrawlerItem(Item):
     street = Field()
     state = Field()
     zip = Field()
+    # add phone number
+    phone = Field()
