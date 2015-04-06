@@ -49,3 +49,6 @@ http://www.yelp.com/search?find_desc=bank&find_loc=Boston%2C+MA&ns=1&start=0&l=g
 http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&sortby=rating&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949
 http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&sortby=review_count&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949
 http://www.yelp.com/search?find_desc=bank&find_loc=Los+Angeles%2C+CA&ns=1&start=0&l=g:-118.423690796,33.9763923189,-118.219070435,34.1470444949
+http://www.yelp.com/search?find_desc=bank&find_loc=Seattle%2C+WA&ns=1&start=0&sortby=rating&l=g:-122.437820435,47.5561403129,-122.233200073,47.6949743419
+http://www.yelp.com/search?find_desc=bank&find_loc=Seattle%2C+WA&ns=1&start=0&l=g:-122.437820435,47.5561403129,-122.233200073,47.6949743419
+http://www.yelp.com/search?find_desc=bank&find_loc=Seattle%2C+WA&ns=1&start=0&sortby=review_count&l=g:-122.437820435,47.5561403129,-122.233200073,47.6949743419
